@@ -10,3 +10,5 @@
 
 !/.gitignore
 !/.github
+
+!/build.gradle

@@ -1,0 +1,57 @@
+// This is not used for building, only for deploying! You prob dont need to run this.
+plugins {
+	id 'maven-publish'
+}
+
+version = "0.1.0"
+
+def ENV = System.getenv()
+def input = ENV.INPUT
+def name = ENV.NAME
+def filename = ENV.FILENAME
+
+if (!input)
+    throw new Exception("No input specififed")
+
+if (!name)
+    throw new Exception("No name specififed")
+
+if (!filename)
+    throw new Exception("No filename specififed")
+
+task("makeJar", type: Jar) {
+    archiveBaseName = name
+	def inputFile = file(input)
+    from(inputFile) {
+        into "natives"
+        rename inputFile.name, filename
+    }
+    destinationDirectory = file("build/jars")
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			groupId "net.fabricmc.fabric-installer-native-lib"
+			artifactId name
+			version project.version
+
+            artifact(makeJar.archiveFile) {
+                builtBy makeJar
+                classifier = null
+			}
+		}
+	}
+
+	repositories {
+		if (ENV.MAVEN_URL) {
+			maven {
+				url ENV.MAVEN_URL
+				credentials {
+					username ENV.MAVEN_USERNAME
+					password ENV.MAVEN_PASSWORD
+				}
+			}
+		}
+	}
+}

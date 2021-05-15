@@ -1,0 +1,22 @@
+name: Release
+on: [workflow_dispatch] # Manual trigger
+jobs:
+  windows:
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [ Win32, x64, ARM, ARM64 ]
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+      - uses: microsoft/setup-msbuild@v1.0.2
+      - run: cmake -G "Visual Studio 16 2019" -A ${{matrix.arch}}
+      - run: msbuild fabric_installer_native_lib.sln /property:Configuration=Release
+      - run: gradle makeJar publish --stacktrace
+        env:
+          MAVEN_URL: ${{ secrets.MAVEN_URL }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+          INPUT: "Release/fabric_installer_native_lib.dll"
+          NAME: "windows-${{ matrix.arch }}"
+          FILENAME: "windows-${{ matrix.arch }}.dll"
