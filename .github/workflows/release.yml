@@ -25,9 +25,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runner: [macos-11.0, ubuntu-20.04]
+        runner: [macos-10.15, ubuntu-20.04]
         include:
-          - runner: macos-11.0
+          - runner: macos-10.15
             ext: dylib
             arch: x86_64_arm64
             name: macos
