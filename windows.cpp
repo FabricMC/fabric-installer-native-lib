@@ -2,17 +2,20 @@
 
 #include <windows.h>
 
-constexpr LPCSTR MinecraftLauncherMutexName = "MojangLauncher";
+constexpr LPCWSTR MinecraftLauncherMutexName = L"MojangLauncher";
 
 JNIEXPORT jboolean JNICALL Java_net_fabricmc_installer_launcher_MojangLauncherHelper_isMojangLauncherOpen(JNIEnv *, jclass) {
-    HANDLE handle = CreateMutexA(nullptr, false, MinecraftLauncherMutexName);
+    HANDLE handle = OpenMutexW(0, false, MinecraftLauncherMutexName);
 
-    if (GetLastError() == ERROR_ALREADY_EXISTS)
+    if (GetLastError() == ERROR_FILE_NOT_FOUND)
     {
-        // Already exists so must be open.
-        return 1;
+        return 0;
     }
 
-    CloseHandle(handle);
-    return 0;
+    if (handle != nullptr)
+    {
+        CloseHandle(handle);
+    }
+
+    return 1;
 }
