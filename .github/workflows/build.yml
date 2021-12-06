@@ -7,6 +7,7 @@ jobs:
       matrix:
         runner: [macos-11, ubuntu-20.04]
         include:
+          - runner: macos-11
             artifact: "*.dylib"
           - runner: ubuntu-20.04
             artifact: "*.so"
