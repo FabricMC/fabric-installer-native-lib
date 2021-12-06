@@ -1,4 +1,11 @@
 cmake_minimum_required(VERSION 3.17)
+
+if(APPLE)
+    set (CMAKE_OSX_DEPLOYMENT_TARGET "10.9" CACHE STRING "Minimum X64 deployment version" FORCE)
+    set (CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "Architectures" FORCE)
+    set (CMAKE_XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET[arch=arm64] "11.0" CACHE STRING "Minimum ARM64 deployment version" FORCE)
+endif()
+
 project(fabric_installer_native_lib)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -8,9 +15,6 @@ set(NATIVE_JNI linux) # The platform specific JNI sub directory
 IF(APPLE)
     set(NATIVE_SOURCE macos.mm)
     set(NATIVE_JNI darwin)
-
-    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.10" CACHE STRING "")
-    SET(CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "Build architectures for Mac OS X" FORCE)
 ELSEIF (WIN32)
     set(NATIVE_SOURCE windows.cpp)
     set(NATIVE_JNI win32)
@@ -20,6 +24,8 @@ message(STATUS "JAVA_HOME= $ENV{JAVA_HOME}")
 
 set(JAVA_INCLUDE_PATH $ENV{JAVA_HOME}/include)
 set(JAVA_INCLUDE_PATH2 $ENV{JAVA_HOME}/include/${NATIVE_JNI})
+set(JAVA_AWT_LIBRARY NotNeeded)
+set(JAVA_JVM_LIBRARY NotNeeded)
 
 find_package(JNI REQUIRED)
 include_directories(${JNI_INCLUDE_DIRS})
