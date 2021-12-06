@@ -5,9 +5,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runner: [macos-10.15, ubuntu-20.04]
+        runner: [macos-11, ubuntu-20.04]
         include:
-          - runner: macos-10.15
             artifact: "*.dylib"
           - runner: ubuntu-20.04
             artifact: "*.so"
