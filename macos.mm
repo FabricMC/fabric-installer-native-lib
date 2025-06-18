@@ -15,3 +15,9 @@ jboolean Java_net_fabricmc_installer_launcher_MojangLauncherHelper_isMojangLaunc
 
     return 0;
 }
+
+jboolean Java_net_fabricmc_installer_launcher_MojangLauncherHelper_isLikelyOnline(JNIEnv *, jclass)
+{
+    // TODO
+    return 1;
+}

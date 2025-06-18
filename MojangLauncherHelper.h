@@ -13,7 +13,15 @@ extern "C" {
  * Signature: ()Z
  */
 JNIEXPORT jboolean JNICALL Java_net_fabricmc_installer_launcher_MojangLauncherHelper_isMojangLauncherOpen
-        (JNIEnv *, jclass);
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     net_fabricmc_installer_launcher_MojangLauncherHelper
+ * Method:    isLikelyOnline
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_net_fabricmc_installer_launcher_MojangLauncherHelper_isLikelyOnline
+  (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }
