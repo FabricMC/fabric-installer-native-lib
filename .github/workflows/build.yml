@@ -5,19 +5,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runner: [macos-11, ubuntu-20.04]
+        runner: [macos-15]
         include:
-          - runner: macos-11
+          - runner: macos-15
             artifact: "*.dylib"
-          - runner: ubuntu-20.04
-            artifact: "*.so"
     runs-on: ${{matrix.runner}}
     steps:
-      - uses: actions/checkout@v2
-      - uses: seanmiddleditch/gha-setup-ninja@v3
+      - uses: actions/checkout@v4
       - run: cmake -DCMAKE_BUILD_TYPE=Release -G Ninja
       - run: ninja
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{matrix.runner}} Artifacts
           path: ${{matrix.artifact}}
@@ -26,14 +23,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [ Win32, x64, ARM, ARM64 ]
-    runs-on: windows-2019
+        arch: [ Win32, x64, ARM64 ]
+    runs-on: windows-2025
     steps:
-      - uses: actions/checkout@v2
-      - uses: microsoft/setup-msbuild@v1.0.2
-      - run: cmake -G "Visual Studio 16 2019" -A ${{matrix.arch}}
+      - uses: actions/checkout@v4
+      - uses: microsoft/setup-msbuild@v2
+      - run: cmake -G "Visual Studio 17 2022" -A ${{matrix.arch}}
       - run: msbuild fabric_installer_native_lib.sln /property:Configuration=Release
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: Windows (${{matrix.arch}}) Artifacts
           path: "Release/*"

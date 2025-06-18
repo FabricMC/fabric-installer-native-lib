@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.17)
 
+include(FetchContent)
+
 if(APPLE)
     set (CMAKE_OSX_DEPLOYMENT_TARGET "10.9" CACHE STRING "Minimum X64 deployment version" FORCE)
     set (CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "Architectures" FORCE)
@@ -31,6 +33,18 @@ find_package(JNI REQUIRED)
 include_directories(${JNI_INCLUDE_DIRS})
 
 add_library(fabric_installer_native_lib SHARED MojangLauncherHelper.h ${NATIVE_SOURCE})
+
+if(WIN32)
+  add_library(wil INTERFACE)
+
+  FetchContent_Declare(
+      microsoft_wil
+      URL https://github.com/microsoft/wil/archive/refs/tags/v1.0.250325.1.zip
+    )
+  FetchContent_Populate(microsoft_wil)
+  target_include_directories(wil INTERFACE ${microsoft_wil_SOURCE_DIR}/include)
+  target_link_libraries(fabric_installer_native_lib PRIVATE wil)
+endif()
 
 IF(APPLE)
     target_link_libraries(fabric_installer_native_lib "-framework AppKit")
