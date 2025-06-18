@@ -5,12 +5,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [ Win32, x64, ARM, ARM64 ]
+        arch: [ Win32, x64, ARM64 ]
     runs-on: windows-2019
     steps:
-      - uses: actions/checkout@v2
-      - uses: microsoft/setup-msbuild@v1.0.2
-      - run: cmake -G "Visual Studio 16 2019" -A ${{matrix.arch}}
+      - uses: actions/checkout@v4
+      - uses: microsoft/setup-msbuild@v2
+      - run: cmake -G "Visual Studio 17 2022" -A ${{matrix.arch}}
       - run: msbuild fabric_installer_native_lib.sln /property:Configuration=Release
       - run: gradle makeJar publish --stacktrace
         env:
@@ -25,20 +25,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runner: [macos-11, ubuntu-20.04]
+        runner: [macos-15]
         include:
-          - runner: macos-11
+          - runner: macos-15
             ext: dylib
             arch: x86_64_arm64
             name: macos
-          - runner: ubuntu-20.04
-            ext: so
-            arch: x64
-            name: linux
     runs-on: ${{matrix.runner}}
     steps:
-      - uses: actions/checkout@v2
-      - uses: seanmiddleditch/gha-setup-ninja@v3
+      - uses: actions/checkout@v4
       - run: cmake -DCMAKE_BUILD_TYPE=Release -G Ninja
       - run: ninja
       - run: gradle makeJar publish --stacktrace
